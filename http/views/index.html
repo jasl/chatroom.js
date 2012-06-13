@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Chatroom.js</title>
+
+    <script src="/js/jquery-1.7.2.js" ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/socket.io.js" ></script>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/bootstrap-responsive.css" />
+    <!--[if lt IE 9]>
+    <script src="/js/html5.js"></script>
+    <![endif]-->
+    <!--[if IE 6]>
+    <script src="/js/ie6.min.js"></script>
+    <link href="/css/ie6.min.css" rel="stylesheet">
+    <![endif]-->
+
+    <script type="text/javascript">
+      var socket;
+      var host = 'ws://' + location.hostname + ':8808/';
+
+      function out(src, message) {
+        $("#chat").append("<p>" + src + ": " + message + "</p>");
+      }
+
+
+      $(document).ready(function() {
+
+        socket = io.connect(host);
+
+        socket.on('connect', function() {
+          out('System', 'Start connecting to the server');
+        });
+        socket.on('connecting', function() {
+          out('System', 'Connecting to the server');
+        });
+        socket.on('reconnect', function() {
+          out('System', 'Reconnected to the server');
+        });
+        socket.on('connected', function() {
+          out('System', 'Connected successfully');
+        });
+        socket.on('reconnecting', function() {
+          out('System', 'Attempting to re-connect to the server');
+        });
+        socket.on('error', function(e) {
+          out('System', e ? e : 'A unknown error occurred');
+        });
+
+        socket.on('message', function(message) {
+          out(message.nickname, message.body);
+        });
+        
+        $('#send').click(function() {
+          var msg = $("#msg").val();
+          var nick = $("#nick").val();
+          socket.emit('message', {
+            'nickname' : nick,
+            'body' : msg
+          });
+          out("Me", msg);
+        });
+      });
+    </script>
+
+    <style>
+      body {
+        padding-top: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">Chatroom.js</a>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="span10">
+        <div id="chat" class="div-scrollable"></div>
+        <div id="input_box" class="container">
+          <div class="form-horizontal">
+            <fieldset>
+              <legend>
+                Message:
+              </legend>
+              <div class="control-group">
+                <label class="control-label" for="input01">Nickname:</label>
+                <div class="controls">
+                  <input type="text" id="nick" value="" class="input-xlarge" />
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="msg">Message:</label>
+                <div class="controls">
+                  <textarea class="input-xlarge" id="msg" rows="3">
+                    
+                  </textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button id="send" class="btn btn-primary">
+                  Send
+                </button>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="span2">
+        <div id="chatter" class="container">
+          <p>
+            NYI
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <div class="container">
+      <hr/>
+      <footer>
+        <p>
+          Jasl&copy;
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
