@@ -1,4 +1,4 @@
-**Chatroom.js ---- To learn Node.js and Socket.IO
+Chatroom.js ---- To learn Node.js and Socket.IO
 ==========
 
 **Fuck JS's closure!!!**
